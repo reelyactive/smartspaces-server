@@ -7,6 +7,10 @@ $.fn.preload = function() {
   });
 }
 
+function capitalizeFirstLetter(string) {
+    return string.charAt(0).toUpperCase() + string.slice(1);
+}
+
 String.prototype.parseURL = function() {
   return this.replace(/[A-Za-z]+:\/\/[A-Za-z0-9-_]+\.[A-Za-z0-9-_:%&~\?\/.=]+/g, function(url) {
 		return '<a href="'+url+'" target="_blank">'+url+'</a>';
@@ -621,6 +625,17 @@ function initObjects() {
     $('#footer').show();
     $('#loading').remove();
     $('#title').show();
+
+    var identifier = getAreaIdentifier();
+    // Set the public access url
+    var areaPublicUrl = 'smartpac.es/' + identifier;
+    $('#footer .url').text(areaPublicUrl);
+
+    // Set the title
+    var titleIdentifier = capitalizeFirstLetter(identifier);
+    $('#header .space-name').text(titleIdentifier);
+    $('title').text(titleIdentifier + ' Smart Space by reelyActive');
+
     loading = false;
   }
   revealObjects();
@@ -695,12 +710,17 @@ function refresh() {
   });
 }
 
-function getJsonUrl() {
-
+function getAreaIdentifier() {
   // Identifiers are obtained by slice to remove leading '#' or '/'.
   var identifier = window.location.hash.slice(1);
   identifier = identifier || window.location.pathname.slice(1);
 
+  return identifier || null;
+}
+
+function getJsonUrl() {
+
+  var identifier = getAreaIdentifier();
   if (identifier) {
     return API_URL + identifier.toLowerCase();
   } else {
