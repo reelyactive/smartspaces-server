@@ -12,5 +12,5 @@ Installation
 Running locally
 ---------------
 
-`node server.js`
-
+1. `node server.js`
+2. Open http://localhost:3000
