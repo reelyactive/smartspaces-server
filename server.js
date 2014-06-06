@@ -8,14 +8,14 @@ app.use(express.static('public'));
 
 // Request handlers
 app.get('/', function(req, res) {
-    res.send('Hello');
+    res.redirect(307, '/notman');
 });
 
 var pages = ['notman', 'greenhouse'];
 
 app.get('/:identifier', function(req, res) {
 	if (pages.indexOf(req.params.identifier) != -1) {
-		res.sendfile("public/index.html")
+		res.sendfile("public/client.html")
 	} else {
 		res.status(404).send('Not found');
 	}
