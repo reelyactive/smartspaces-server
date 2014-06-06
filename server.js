@@ -5,7 +5,6 @@ var app = express();
 // Static files directory
 app.use(express.static('public'));
 
-
 // Request handlers
 app.get('/', function(req, res) {
     res.redirect(307, '/notman');
@@ -25,4 +24,6 @@ app.get('/:identifier', function(req, res) {
  
 
 var port = process.env.port || 3000;
-app.listen(port);
+app.listen(port, function() {
+	console.log("smartpaces-server is listening on port", port);
+});
