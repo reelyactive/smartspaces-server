@@ -22,7 +22,7 @@ app.get('/:identifier', function(req, res) {
 // Static files directory
 app.use(express.static('public'));
 
-var port = process.env.port || 3000;
+var port = process.env.PORT || 3000;
 app.listen(port, function() {
   console.log("smartpaces-server is listening on port", port);
 });
