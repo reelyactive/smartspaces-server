@@ -3,7 +3,7 @@ var app = express();
 
 
 // List of acceptable pages on which to serve the web client.
-var pages = ['notman', 'greenhouse'];
+var pages = ['reelyactive', 'notman'];
 
 // Directory containing the web client.
 var publicDir = 'public';
@@ -11,8 +11,8 @@ var publicDir = 'public';
 
 // Request handlers
 app.get('/', function(req, res) {
-    // Redirect the root path to our default area.
-    res.redirect(307, '/notman');
+  // Redirect the root path to our default area.
+  res.redirect(307, '/reelyactive');
 });
 
 app.get('/:identifier', function(req, res) {
