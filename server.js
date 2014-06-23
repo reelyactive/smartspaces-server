@@ -1,3 +1,4 @@
+var path = require('path');
 var express = require("express");
 var app = express();
 
@@ -6,7 +7,7 @@ var app = express();
 var pages = ['reelyactive', 'notman'];
 
 // Directory containing the web client.
-var publicDir = 'public';
+var publicDir = '../smartspaces-client';
 
 
 // Request handlers
@@ -17,7 +18,7 @@ app.get('/', function(req, res) {
 
 app.get('/:identifier', function(req, res) {
   if (pages.indexOf(req.params.identifier) != -1) {
-    res.sendfile(publicDir + "/index.html");
+    res.sendfile(path.resolve(publicDir + "/index.html"));
   } else {
     res.status(404).send('Not found');
   }
