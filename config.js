@@ -2,7 +2,7 @@ var config = {}
 
 config.twitter = {};
 
-config.twitter.consumerKey = 'YOUR_KEY';
-config.twitter.consumerSecret = 'YOUR_SECRET';
+config.twitter.consumerKey = 'z2Ge4SaxYCzpuUomhE8lQ';
+config.twitter.consumerSecret = 'jFEDqN28VVRPmPonqZbqrQT99unamLotIJY3XHSpU';
 
 module.exports = config;

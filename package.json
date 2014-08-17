@@ -4,6 +4,10 @@
   "dependencies": {
     "express": "3.x",
     "node-twitter-api": "~1.2.3",
-    "node-cache": "~1.0.0"
+    "node-cache": "~1.0.0",
+    "nedb": "~0.10.7",
+    "body-parser": "~1.6.3",
+    "request": "~2.40.0",
+    "periodic-task": "~0.1.0"
   }
 }
