@@ -20,6 +20,7 @@ var twitter = new twitterAPI({
 // Caching for social API responses
 var NodeCache = require('node-cache');
 var tweetCache = new NodeCache({ stdTTL: 300 });
+var remoteCache = new NodeCache({ stdTTL: 86400 });
 
 // Parser for incoming POST requests
 var bodyParser = require('body-parser')
@@ -124,6 +125,31 @@ app.get('/:identifier/recent', function(req, res) {
   var yesterday = Date.now() - (1000 * 60 * 60 * 24);
   peopleDB.find({ place: req.params.identifier, lastSeen: { $gt: yesterday} }, function (err, people) {
     res.json(people);
+  });
+});
+
+app.get('/remote/:url', function(req, res) {
+//  var url = req.body.url;
+  var url = req.params.url;
+  remoteCache.get(url, function(error, value) { // check cache
+    if (!error) {
+      if (isEmpty(value)) { // user not found in cache
+        request.get(url, function (error, response, body) {
+          if (!error) {
+            remoteCache.set(url, body);
+            console.log('stored in cache');
+            res.send(body);
+          } else {
+            res.status(404).send('Error');
+          }
+        });
+      } else { // user found in cache
+        res.send(value[url]);
+        console.log('retrieved from cache');
+      }
+    } else {
+      res.status(404).send('Error');
+    }
   });
 });
 
