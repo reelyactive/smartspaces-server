@@ -4,6 +4,7 @@
 	},
 	"notman": {
 		"displayName": "Notman House",
-		"twitter": "notman"
+		"twitter": "notman",
+		"apiUrl": "http://www.hyperlocalcontext.com/at/"
 	}
 }
