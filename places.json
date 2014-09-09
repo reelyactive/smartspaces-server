@@ -1,10 +1,12 @@
 {
-	"reelyactive": {
-		"displayName": "reelyActive"
-	},
-	"notman": {
-		"displayName": "Notman House",
-		"twitter": "notman",
-		"apiUrl": "http://www.hyperlocalcontext.com/at/"
-	}
+  "reelyactive": {
+    "displayName": "reelyActive",
+    "twitter": "reelyActive",
+    "apiUrl": "http://www.hyperlocalcontext.com/at/"
+  },
+  "notman": {
+    "displayName": "Notman House",
+    "twitter": "notman",
+    "apiUrl": "http://www.hyperlocalcontext.com/at/"
+  }
 }
