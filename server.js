@@ -163,6 +163,7 @@ app.post('/track', function(req, res) {
     });
     trackers[url] = task;
     console.log('Running tracker.');
+    console.log(attributes);
     task.run();
   }
 });
@@ -177,24 +178,43 @@ function updatePeople(apiRoot, place, attributes) {
         return false;
       }
       for (var key in resultsObj) {
-        var id = key;
-        var person = { 'uuid': id, 'place': place }
-        var hasAllAttributes = true;
-        for (var i in attributes) {
-          if (attributes[i] in resultsObj[key]) {
-            person[attributes[i]] = resultsObj[key][attributes[i]];
-          } else {
-            hasAllAttributes = false;
-          }
-        }
-        if (hasAllAttributes) {
-          person['lastSeen'] = Date.now();
-          peopleDB.update({ uuid: id, place: place }, person, { upsert: true });
-          peopleDB.persistence.compactDatafile();
+        if (resultsObj[key].hasOwnProperty('url')) {
+          request.get(resultsObj[key]['url'], function (err, res, body) {
+            if (!err) {
+              try {
+                var itemObj = JSON.parse(body); 
+              } catch(e) {
+                return false;
+              }
+                var id = resultsObj[key]['value'];
+                updatePerson(id, place, itemObj, attributes);
+            }
+          });
+        } else {
+          var id = key;
+          updatePerson(id, place, resultsObj[key], attributes);
         }
       }
     }
   });
+}
+
+function updatePerson(id, place, itemObj, attributes) {
+  var person = { 'uuid': id, 'place': place }
+  var hasAllAttributes = true;
+  for (var i in attributes) {
+    if (attributes[i] in itemObj) {
+      person[attributes[i]] = itemObj[attributes[i]];
+    } else {
+      hasAllAttributes = false;
+    }
+  }
+  if (hasAllAttributes) {
+    person['lastSeen'] = Date.now();
+    peopleDB.update({ uuid: id, place: place }, person, { upsert: true });
+    peopleDB.persistence.compactDatafile();
+  }
+  console.log(person);
 }
 
 function isEmpty(obj) {
