@@ -13,11 +13,11 @@ Configuration
 -------------
 
 1. Update _places.json_ to reflect your places of interest
-2. Update _config.json_ with your Twitter key/secret ([see apps.twitter.com](https://apps.twitter.com/))
+2. Update _config.json_ with your Twitter key/secret (see [apps.twitter.com](https://apps.twitter.com/))
 3. Update _server.js_ to redirect to the desired place of interest (by default the root redirects to _notman_, an existing Smart Space you can use for test & development)
 4. Update _server.js_ to use the desired port number, by default it is 3000
 
-The default configuration expects smartspaces-client to reside in a neighbouring folder.  This can be achieved by cloning the [smartspaces-client](https://github.com/reelyactive/smartspaces-client) repository from the same root folder.
+The default configuration expects smartspaces-client to reside in a neighbouring folder.  This can be achieved by cloning the [smartspaces-client](https://github.com/reelyactive/smartspaces-client) repository from the same root folder.  If not, be sure to update the _publicDir_ variable in _server.js_. 
 
 Running locally
 ---------------
