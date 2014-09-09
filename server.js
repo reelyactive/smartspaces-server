@@ -47,7 +47,7 @@ for (var identifier in places) {
 // Request handlers
 app.get('/', function(req, res) {
   // Redirect the root path to our default area.
-  res.redirect(307, '/reelyactive');
+  res.redirect(307, '/notman');
 });
 
 app.get('/:identifier', function(req, res) {
