@@ -1,5 +1,6 @@
 var path = require('path');
 var express = require('express');
+var md5 = require('MD5');
 var app = express();
 
 // Config file
@@ -128,24 +129,26 @@ app.get('/:identifier/recent', function(req, res) {
   });
 });
 
-app.get('/remote/:url', function(req, res) {
-//  var url = req.body.url;
-  var url = req.params.url;
-  remoteCache.get(url, function(error, value) { // check cache
+app.post('/remote', function(req, res) {
+  var url = req.body.url;
+  var urlHash = md5(url);
+  request.get(url, function (error, response, body) {
     if (!error) {
-      if (isEmpty(value)) { // user not found in cache
-        request.get(url, function (error, response, body) {
-          if (!error) {
-            remoteCache.set(url, body);
-            console.log('stored in cache');
-            res.send(body);
-          } else {
-            res.status(404).send('Error');
-          }
-        });
-      } else { // user found in cache
-        res.send(value[url]);
-        console.log('retrieved from cache');
+      remoteCache.set(urlHash, body);
+      res.json({ hash: urlHash });
+    } else {
+      res.status(404).send('Error');
+    }
+  });
+});
+
+app.get('/remote/:urlHash', function(req, res) {
+  remoteCache.get(req.params.urlHash, function(error, value) { // check cache
+    if (!error) {
+      if (isEmpty(value)) { // page not found in cache
+        res.status(404).send('Not found');
+      } else { // page found in cache
+        res.send(value[req.params.urlHash]);
       }
     } else {
       res.status(404).send('Error');
