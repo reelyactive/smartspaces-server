@@ -180,7 +180,7 @@ function SmartspacesServer(options) {
 
   var port = process.env.PORT || httpPort;
   app.listen(port, function() {
-    console.log("smartpaces-server is listening on port", port);
+    console.log("smartspaces-server is listening on port", port);
   });
 }
 
