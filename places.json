@@ -1,4 +1,9 @@
 {
+  "test": {
+    "displayName": "Dummy Test",
+    "twitter": "reelyActive",
+    "apiUrl": "http://localhost:3001/at/"
+  },
   "reelyactive": {
     "displayName": "reelyActive",
     "twitter": "reelyActive",
