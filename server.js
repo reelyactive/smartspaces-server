@@ -1,21 +1,38 @@
 var path = require('path');
 var express = require('express');
+var engine = require('ejs-locals');
 var md5 = require('MD5');
 var app = express();
 
 // Config file
 var config = require('./config');
 
-// Database
+// Rendering engine
+app.engine('ejs', engine);
+app.set('view engine', 'ejs');
+
+// Databases
 var Datastore = require('nedb')
   , peopleDB = new Datastore({ filename: 'people.db', autoload: true })
-  , noticesDB = new Datastore({ filename: 'notices.db', autoload: true });
+  , noticesDB = new Datastore({ filename: 'notices.db', autoload: true })
+  , servicesDB = new Datastore({ filename: 'services.db', autoload: true })
+  , placesDB = new Datastore({ filename: 'places.db', autoload: true })
+  , settingsDB = new Datastore({ filename: 'settings.db', autoload: true });
 
-// Twitter API setup
+// Twitter API setup and settings initialization
 var twitterAPI = require('node-twitter-api');
-var twitter = new twitterAPI({
-    consumerKey: config.twitter.consumerKey,
-    consumerSecret: config.twitter.consumerSecret
+var twitter;
+settingsDB.findOne({}, function (err, settings) {
+  if (settings != null) {
+    twitter = new twitterAPI({
+      consumerKey: settings.twitterKey,
+      consumerSecret: settings.twitterSecret
+    });
+  } else {
+    settingsDB.insert({}, function(err, newSettings) {
+      console.log(newSettings);
+    });
+  }
 });
 
 // Caching for social API responses
@@ -38,17 +55,134 @@ var trackers = {};
 // Directory containing the web client.
 var publicDir = '../smartspaces-client';
 
-// Read places.json and create list of acceptable pages on which to serve the web client.
-var places = require('./places');
-var pages = [];
-for (var identifier in places) {
-  pages.push(identifier);
-}
+// Read places db and create list of acceptable pages on which to serve the web client.
+initPages();
 
 // Request handlers
 app.get('/', function(req, res) {
   // Redirect the root path to our default area.
   res.redirect(307, '/notman');
+});
+
+app.get('/manage', function(req, res) {
+  placesDB.find({}, function (err, places) {
+    res.render('places', { places: places });
+  });
+});
+
+app.get('/manage/places', function(req, res) {
+  placesDB.find({}, function (err, places) {
+    res.render('places', { places: places });
+  });
+});
+
+app.get('/manage/services', function(req, res) {
+  servicesDB.find({}, function (err, services) {
+    res.render('services', { services: services });
+  });
+});
+
+app.get('/manage/settings', function(req, res) {
+  settingsDB.findOne({}, function (err, settings) {
+    res.render('settings', { settings: settings });
+  });
+});
+
+app.post('/manage/update_place', function(req, res) {
+  placesDB.update({ _id: req.body._id }, req.body, { upsert: true }, function(err, data) {
+    if (err) {
+      console.log(err);
+    } else {
+      console.log('Updated!');
+      console.log(req.body);
+      initPages();
+      res.json({ message: 'saved!' });
+    }
+  });
+});
+
+app.post('/manage/update_service', function(req, res) {
+  servicesDB.update({ _id: req.body._id }, req.body, { upsert: true }, function(err, data) {
+    if (err) {
+      console.log(err);
+    } else {
+      console.log('Updated!');
+      console.log(req.body);
+      res.json({ message: 'saved!' });
+    }
+  });
+});
+
+app.post('/manage/update_settings', function(req, res) {
+  settingsDB.update({ _id: req.body._id }, req.body, { upsert: true }, function(err, data) {
+    if (err) {
+      console.log(err);
+    } else {
+      console.log('Updated!');
+      console.log(req.body);
+      if (req.body.hasOwnProperty('twitterKey') && req.body.hasOwnProperty('twitterSecret')) {
+        twitter = new twitterAPI({
+          consumerKey: req.body.twitterKey,
+          consumerSecret: req.body.twitterSecret
+        });
+      }
+      res.json({ message: 'saved!' });
+    }
+  });
+});
+
+app.post('/manage/add_place', function(req, res) {
+  placesDB.insert(req.body, function(err, place) {
+    if (err) {
+      console.log(err);
+    } else {
+      console.log('Added!');
+      console.log(req.body);
+      initPages();
+      res.json(place);
+    }
+  });
+});
+
+app.post('/manage/add_service', function(req, res) {
+  servicesDB.insert(req.body, function(err, service) {
+    if (err) {
+      console.log(err);
+    } else {
+      console.log('Added!');
+      console.log(req.body);
+      res.json(service);
+    }
+  });
+});
+
+app.post('/manage/delete_place', function(req, res) {
+  placesDB.remove({ _id: req.body._id }, {}, function(err, numRemoved) {
+    if (err) {
+      console.log(err);
+    } else {
+      console.log('Deleted!');
+      console.log(req.body);
+      initPages();
+      res.json({ message: 'deleted!' });
+    }
+  });
+});
+
+app.post('/manage/delete_service', function(req, res) {
+  servicesDB.remove({ _id: req.body._id }, {}, function(err, numRemoved) {
+    if (err) {
+      console.log(err);
+    } else {
+      console.log('Deleted!');
+      console.log(req.body);
+      res.json({ message: 'deleted!' });
+    }
+  });
+});
+
+app.get('/jsontest', function(req, res) {
+  res.sendfile(path.resolve(publicDir + "/test.json"));
 });
 
 app.get('/:identifier', function(req, res) {
@@ -60,16 +194,24 @@ app.get('/:identifier', function(req, res) {
 });
 
 app.get('/:identifier/info', function(req, res) {
-  if (req.params.identifier in places) {
-    res.json(places[req.params.identifier]);
-  } else {
-    res.status(404).send('Not found');
-  }
+  placesDB.find({ identifier: req.params.identifier }, function (err, places) {
+    if (places.length > 0) {
+      res.json(places[0]);
+    } else {
+      res.status(404).send('Not found');
+    }
+  });
 });
 
 app.get('/:identifier/notices', function(req, res) {
   getNotices(req.params.identifier).exec(function (err, notices) {
     res.json(notices);
+  });
+});
+
+app.get('/:identifier/services', function(req, res) {
+  servicesDB.find({}, function (err, services) {
+    res.json(services);
   });
 });
 
@@ -195,7 +337,7 @@ function updatePeople(apiRoot, place, attributes) {
           });
         } else {
           var id = key;
-          updatePerson(id, place, resultsObj[key], attributes);
+          if (id != 'error') updatePerson(id, place, resultsObj[key], attributes);
         }
       }
     }
@@ -218,6 +360,15 @@ function updatePerson(id, place, itemObj, attributes) {
     peopleDB.persistence.compactDatafile();
   }
   console.log(person);
+}
+
+function initPages() {
+  pages = [];
+  placesDB.find({}, function (err, places) {
+    for (var i = 0; i < places.length; i++) {
+      pages.push(places[i]['identifier']);
+    }
+  });
 }
 
 function isEmpty(obj) {

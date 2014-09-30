@@ -1,0 +1,411 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <title>Smart Spaces Manager</title>
+		<style>
+			body {
+			  font-family: 'Open Sans', sans-serif;
+			  background: #f0f0f0; /* Old browsers */
+			  background: -moz-linear-gradient(top, #f0f0f0 0%, #adadad 100%); /* FF3.6+ */
+			  background: -webkit-gradient(linear, left top, left bottom, color-stop(0%,#f0f0f0), color-stop(100%,#adadad)); /* Chrome,Safari4+ */
+			  background: -webkit-linear-gradient(top, #f0f0f0 0%,#adadad 100%); /* Chrome10+,Safari5.1+ */
+			  background: -o-linear-gradient(top, #f0f0f0 0%,#adadad 100%); /* Opera 11.10+ */
+			  background: -ms-linear-gradient(top, #f0f0f0 0%,#adadad 100%); /* IE10+ */
+			  background: linear-gradient(to bottom, #f0f0f0 0%,#adadad 100%); /* W3C */
+			  filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#f0f0f0', endColorstr='#adadad',GradientType=0 ); /* IE6-9 */
+			  background-attachment: fixed;
+			  padding: 0;
+			  margin: 0;
+			  overflow-x: hidden;
+			}
+
+			a {
+			  color: #c4481c;
+			}
+
+			a:hover {
+			  color: black;
+			}
+
+			.dummy {
+			  display: none;
+			}
+
+			#header {
+			  z-index: 1000;
+			  width: 100%;
+			  height: 80px;
+			  font-weight: 300;
+			  color: white;
+			  font-size: 30px;
+			  line-height: 80px;
+			  background: -moz-linear-gradient(top, #2f2e34 0%, #1e1d23 100%); /* FF3.6+ */
+			  background: -webkit-gradient(linear, left top, left bottom, color-stop(0%,#2f2e34), color-stop(100%,#1e1d23)); /* Chrome,Safari4+ */
+			  font-style: italic;
+			}
+
+			#header .text {
+			  margin-left: 15px;
+			}
+
+			#header .bold {
+			  font-weight: 600;
+			  font-style: normal;
+			}
+
+			#nav {
+			  z-index: 1000;
+			  width: 100%;
+			  height: 50px;
+			  font-size: 20px;
+			  line-height: 50px;
+			  color: #959595;
+			  font-weight: 300;
+			  font-style: italic;
+			  background-color: #bfbfbf;
+			}
+
+			#nav .button {
+			  background: #ffce57; /* Old browsers */
+			  background: -moz-linear-gradient(top, #ffce57 0%, #ffb541 100%); /* FF3.6+ */
+			  background: -webkit-gradient(linear, left top, left bottom, color-stop(0%,#ffce57), color-stop(100%,#ffb541)); /* Chrome,Safari4+ */
+			  background: -webkit-linear-gradient(top, #ffce57 0%,#ffb541 100%); /* Chrome10+,Safari5.1+ */
+			  background: -o-linear-gradient(top, #ffce57 0%,#ffb541 100%); /* Opera 11.10+ */
+			  background: -ms-linear-gradient(top, #ffce57 0%,#ffb541 100%); /* IE10+ */
+			  background: linear-gradient(to bottom, #ffce57 0%,#ffb541 100%); /* W3C */
+			  filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#ffce57', endColorstr='#ffb541',GradientType=0 ); /* IE6-9 */
+			  height: 50px;
+			  display: inline-block;
+			  width: 150px;
+			  font-weight: 500;
+			  border-right: 1px solid #ffb541;
+			  border-left: 1px solid #ffda85;
+			  color: #83550c;
+			  text-shadow: 1px 1px #ffcd87;
+			  text-align: center;
+			}
+
+			#nav .button:hover {
+			  color: black;
+			  cursor: pointer;
+			}
+
+			#nav .button.selected {
+			  background: #e09115; /* Old browsers */
+			  background: -moz-linear-gradient(top, #e09115 0%, #ffa82b 100%); /* FF3.6+ */
+			  background: -webkit-gradient(linear, left top, left bottom, color-stop(0%,#e09115), color-stop(100%,#ffa82b)); /* Chrome,Safari4+ */
+			  background: -webkit-linear-gradient(top, #e09115 0%,#ffa82b 100%); /* Chrome10+,Safari5.1+ */
+			  background: -o-linear-gradient(top, #e09115 0%,#ffa82b 100%); /* Opera 11.10+ */
+			  background: -ms-linear-gradient(top, #e09115 0%,#ffa82b 100%); /* IE10+ */
+			  background: linear-gradient(to bottom, #e09115 0%,#ffa82b 100%); /* W3C */
+			  filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#e09115', endColorstr='#ffa82b',GradientType=0 ); /* IE6-9 */
+			  color: white;
+			  text-shadow: 1px 1px #c77900;
+			}
+
+			#nav .button.selected:hover {
+			  color: white;
+			}
+
+			.content {
+			  padding: 15px;
+			}
+
+			.left-pane {
+			  width: 26%;
+			  float: left;
+			}
+
+			.right-pane {
+			  width: 72%;
+			  margin-left: 15px;
+			  float: left;
+			}
+
+			.explain-header {
+			  font-size: 20px;
+			  font-style: italic;
+			  color: #585858;
+			  line-height: 24px;
+			  margin-bottom: 15px;
+			}
+
+			.explain-header .no-places {
+			  display: none;
+			}
+
+			.explain-header .has-places {
+			  display: block;
+			}
+
+			.explain-header.empty .no-places {
+			  display: block;
+			}
+
+			.explain-header.empty .has-places {
+			  display: none;
+			}
+
+			.selector {
+			  background-color: #aeaeae;
+			  border-radius: 15px;
+			  font-size: 20px;
+			  font-weight: 600;
+			  padding: 10px;
+			  text-align: center;
+			  margin-bottom: 10px;
+			  cursor: pointer;
+			}
+
+			.selector:hover {
+			  background-color: #bebebe;
+			}
+
+			.selector.selected {
+			  background-color: #444248;
+			  color: white;
+			}
+
+			textarea, input { outline: none; }
+			
+			.label-url {
+				font-size: 18px;
+			}
+
+			input {
+			  font-size: 18px;
+			  font-family: 'Open Sans', sans-serif;
+			  background-color: #ebebeb;
+			  border: 1px solid #afafaf;
+			}
+			
+			input#twitter {
+				padding-left: 0;
+				padding-right: 0;
+			}
+
+			select {
+			  font-size: 18px !important;
+			  font-family: 'Open Sans', sans-serif;
+			}
+
+			input:focus {
+			  background-color: white;
+			  border: 1px solid white;
+			}
+
+			input[type=text] {
+			  border-radius: 10px;
+			  padding: 5px;
+			  width: 200px;
+			}
+
+			input.long {
+			  width: 400px;
+			}
+
+			.form .label {
+			  font-weight: 600;
+				font-style: italic;
+			}
+
+			.form-item {
+			  margin-bottom: 10px;
+			}
+
+			.place-form, .service-form {
+			  display: none;
+			}
+
+			.save, .add {
+			  background-color: #aeaeae;
+			  color: black;
+			  border-radius: 10px;
+			  font-size: 18px;
+			  font-weight: 600;
+			  padding: 5px 15px;
+			  text-align: center;
+			  margin-top: 10px;
+			  cursor: pointer;
+			  display: inline-block;
+			}
+
+			.save:hover, .add:hover {
+			  background-color: white;
+			}
+
+			.saved, .added {
+			  font-size: 18px;
+			  margin-top: 10px;
+			  color: #696969;
+			  display: none;
+			}
+
+			.remove a {
+			  font-weight: 600;
+			  font-style: italic;
+			}
+
+			.remove {
+			  display: inline-block;
+			  float: right;
+			}
+
+			.remove .confirm {
+			  display: none;
+			}
+
+			a.add-link {
+			  display: block;
+			  text-align: center;
+			  margin-top: 15px;
+			  font-size: 18px;
+			  color: #474747;
+			  font-weight: 600;
+			  font-style: italic;
+			}
+
+			a.add-link:hover {
+			  color: black;
+			}
+
+			.form .add {
+			  display: none;
+			}
+
+			.new-form .add {
+			  display: inline-block;
+			}
+
+			.new-form .save {
+			  display: none;
+			}
+
+			a.button {
+			  text-decoration: none;
+			}
+			
+			.form .eg {
+				font-style: normal;
+				font-weight: 300;
+			}
+		</style>
+    <script src="//ajax.googleapis.com/ajax/libs/jquery/2.1.1/jquery.min.js"></script>
+  </head>
+  <body>
+		<div id="header"><span class="text">Smart Spaces <span class="bold">Manager</span></span></div>
+		<%- body %>
+		<script type="text/javascript">
+			function getForm(element) {
+			  return $(element).parents('.form');
+			}
+
+			function getFormData(form) {
+			  var formData = {};
+			  $('input, select', form).each(function() {
+			    var attrName = this.id;
+			    var attrVal = $(this).val();
+			    formData[attrName] = attrVal;
+			  });
+			  return formData;
+			}
+
+			function getID(form) {
+			  return $('#_id', form).val();
+			}
+
+			function saveItem(type, button) {
+			  $(button).html("Saving...")
+			  var form = getForm(button);
+			  form.css({ opacity: 0.5 });
+				$.post('/manage/update_'+type, getFormData(form), function(result) {
+					  form.css({ opacity: 1.0 });
+					  $('.save', form).html("Save");
+					  $('.saved', form).show().delay(1000).fadeOut(500);
+				  }, 'json'
+				);
+			}
+
+			function addItem(type, button) {
+			  $(button).html("Adding...")
+			  var form = getForm(button);
+			  form.css({ opacity: 0.5 });
+				$.post('/manage/add_'+type, getFormData(form), function(place) {
+					  form.css({ opacity: 1.0 });
+					  $('.add', form).html("Add");
+					  $('.added', form).show().delay(1000).fadeOut(500);
+					  location.reload();
+				  }, 'json'
+				);
+			}
+
+			function removeItem(type, button) {
+			  var form = getForm(button);
+			  $.post('/manage/delete_'+type, getFormData(form), function(result) {
+					  form.remove();
+					  $('#selector'+getID(form)).remove();
+				  }, 'json'
+				);
+			}
+
+			$(document).ready(function() {
+			  $('.selector').click(function() {
+			    $('.selector').removeClass('selected');
+			    $(this).addClass('selected');
+			    $('.form').hide();
+			    var identifier = $(this).data('identifier');
+			    $('#'+identifier).show();
+					if ($('#identifier', '#'+identifier).val() != '') {
+						$('#identifier-hint', '#'+identifier).html('/'+identifier);
+					}
+			  });
+
+			  $('.place-form .save').click(function() {
+			    saveItem('place', this);
+				});
+
+				$('.service-form .save').click(function() {
+				  saveItem('service', this);
+				});
+				
+				$('.settings-form .save').click(function() {
+				  saveItem('settings', this);
+				});
+
+				$('.place-form .add').click(function() {
+			    addItem('place', this);
+				});
+
+				$('.service-form .add').click(function() {
+			    addItem('service', this);
+				});
+
+				$('.remove a.initial').click(function() {
+				  $(this).hide();
+				  $('.confirm', $(this).parent()).show();
+				});
+
+				$('a.dont-remove').click(function() {
+				  $(this).parent().hide();
+				  $('a.initial', $(this).parents('.remove')).show();
+				});
+
+				$('.place-form a.confirm-remove').click(function() {
+				  removeItem('place', this);
+				});
+
+				$('.service-form a.confirm-remove').click(function() {
+				  removeItem('service', this);
+				});
+
+				$('a.add-link').click(function() {
+				  $('.selector').removeClass('selected');
+				  $('.form').hide();
+				  $('.new-form').show();
+				  $('.new-form input[type=text]').first().focus();
+				});
+			});
+		</script>
+  </body>
+</html>

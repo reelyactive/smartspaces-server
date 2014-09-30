@@ -1,0 +1,26 @@
+<% layout('manager') %>
+<% selected = 'services' %>
+<% include nav %>
+<div class="services content">
+	<div class="left-pane">
+		<div class="explain-header <% if (services.length == 0) { %>empty<% } %>">
+			<div class="has-places">Your spaces are connected to the following services:</div>
+			<div class="no-places">You haven't connected your spaces to any services yet.</div>
+		</div>
+		<div class="place-selectors">
+			<% for (var i = 0; i < services.length; i++) { %>
+			  <div class="service selector" data-identifier="<%= services[i]._id %>" id="selector<%= services[i]._id %>"><%= services[i].name %></div>
+			<% } %>
+		</div>
+		<div class="service dummy"></div>
+		<a href="javascript:void(0)" class="add-service add-link">Add a new service</a>
+	</div>
+	<div class="right-pane">
+		<% for (var i = 0; i < services.length; i++) { %>
+			<% service = services[i]; %>
+			<% include service_form %>
+		<% } %>
+		<% service = null %>
+		<% include service_form %>
+	</div>
+</div>
