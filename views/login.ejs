@@ -1,0 +1,19 @@
+<% layout('manager') %>
+<div class="form login-form">
+	<div class="form-item">
+		<div class="label">Enter the admin password:</span></div>
+		<input type="password" id="password" />
+	</div>
+	<div class="login">Log In</div>
+</div>
+<script type="text/javascript">
+	$('#password').focus();
+	$('#password').keydown(function (e){
+		if(e.keyCode == 13) {
+			login();
+    }
+	});
+	$('.login').click(function() {
+		login();
+	});
+</script>

@@ -2,6 +2,8 @@ var path = require('path');
 var express = require('express');
 var engine = require('ejs-locals');
 var md5 = require('MD5');
+var read = require('read');
+var twitterAPI = require('node-twitter-api');
 var app = express();
 
 // Config file
@@ -11,6 +13,10 @@ var config = require('./config');
 app.engine('ejs', engine);
 app.set('view engine', 'ejs');
 
+// Sessions
+app.use(express.cookieParser());
+app.use(express.session({secret: 'ZvGG0CuLh2vU5Xo7TX0t62FKHOyzT7Ow'}));
+
 // Databases
 var Datastore = require('nedb')
   , peopleDB = new Datastore({ filename: 'people.db', autoload: true })
@@ -18,22 +24,6 @@ var Datastore = require('nedb')
   , servicesDB = new Datastore({ filename: 'services.db', autoload: true })
   , placesDB = new Datastore({ filename: 'places.db', autoload: true })
   , settingsDB = new Datastore({ filename: 'settings.db', autoload: true });
-
-// Twitter API setup and settings initialization
-var twitterAPI = require('node-twitter-api');
-var twitter;
-settingsDB.findOne({}, function (err, settings) {
-  if (settings != null) {
-    twitter = new twitterAPI({
-      consumerKey: settings.twitterKey,
-      consumerSecret: settings.twitterSecret
-    });
-  } else {
-    settingsDB.insert({}, function(err, newSettings) {
-      console.log(newSettings);
-    });
-  }
-});
 
 // Caching for social API responses
 var NodeCache = require('node-cache');
@@ -65,61 +55,87 @@ app.get('/', function(req, res) {
 });
 
 app.get('/manage', function(req, res) {
-  placesDB.find({}, function (err, places) {
-    res.render('places', { places: places });
-  });
+  if (isValid(req.session.password)) {
+    placesDB.find({}, function (err, places) {
+      res.render('places', { places: places });
+    });
+  } else {
+    res.render('login');
+  }
+});
+
+app.post('/manage/login', function(req, res) {
+  var hash = md5(req.body.password);
+  if (isValid(hash)) {
+    req.session.password = hash;
+    res.json({ message: 'success' });
+  } else {
+    res.json({ message: 'error' });
+  }
 });
 
 app.get('/manage/places', function(req, res) {
-  placesDB.find({}, function (err, places) {
-    res.render('places', { places: places });
-  });
+  if (isValid(req.session.password)) {
+    placesDB.find({}, function (err, places) {
+      res.render('places', { places: places });
+    });
+  } else {
+    res.redirect(307, '/manage');
+  }
 });
 
 app.get('/manage/services', function(req, res) {
-  servicesDB.find({}, function (err, services) {
-    res.render('services', { services: services });
-  });
+  if (isValid(req.session.password)) {
+    servicesDB.find({}, function (err, services) {
+      res.render('services', { services: services });
+    });
+  } else {
+    res.redirect(307, '/manage');
+  }
 });
 
 app.get('/manage/settings', function(req, res) {
-  settingsDB.findOne({}, function (err, settings) {
-    res.render('settings', { settings: settings });
-  });
+  if (isValid(req.session.password)) {
+    settingsDB.findOne({}, function (err, settings) {
+      res.render('settings', { settings: settings });
+    });
+  } else {
+    res.redirect(307, '/manage');
+  }
 });
 
-app.post('/manage/update_place', function(req, res) {
+app.post('/manage/update_place', isAuthenticated, function(req, res) {
   placesDB.update({ _id: req.body._id }, req.body, { upsert: true }, function(err, data) {
     if (err) {
-      console.log(err);
+      //console.log(err);
     } else {
-      console.log('Updated!');
-      console.log(req.body);
+      //console.log('Updated!');
+      //console.log(req.body);
       initPages();
       res.json({ message: 'saved!' });
     }
   });
 });
 
-app.post('/manage/update_service', function(req, res) {
+app.post('/manage/update_service', isAuthenticated, function(req, res) {
   servicesDB.update({ _id: req.body._id }, req.body, { upsert: true }, function(err, data) {
     if (err) {
-      console.log(err);
+      //console.log(err);
     } else {
-      console.log('Updated!');
-      console.log(req.body);
+      //console.log('Updated!');
+      //console.log(req.body);
       res.json({ message: 'saved!' });
     }
   });
 });
 
-app.post('/manage/update_settings', function(req, res) {
+app.post('/manage/update_settings', isAuthenticated, function(req, res) {
   settingsDB.update({ _id: req.body._id }, req.body, { upsert: true }, function(err, data) {
     if (err) {
-      console.log(err);
+      //console.log(err);
     } else {
-      console.log('Updated!');
-      console.log(req.body);
+      //console.log('Updated!');
+      //console.log(req.body);
       if (req.body.hasOwnProperty('twitterKey') && req.body.hasOwnProperty('twitterSecret')) {
         twitter = new twitterAPI({
           consumerKey: req.body.twitterKey,
@@ -131,51 +147,51 @@ app.post('/manage/update_settings', function(req, res) {
   });
 });
 
-app.post('/manage/add_place', function(req, res) {
+app.post('/manage/add_place', isAuthenticated, function(req, res) {
   placesDB.insert(req.body, function(err, place) {
     if (err) {
-      console.log(err);
+      //console.log(err);
     } else {
-      console.log('Added!');
-      console.log(req.body);
+      //console.log('Added!');
+      //console.log(req.body);
       initPages();
       res.json(place);
     }
   });
 });
 
-app.post('/manage/add_service', function(req, res) {
+app.post('/manage/add_service', isAuthenticated, function(req, res) {
   servicesDB.insert(req.body, function(err, service) {
     if (err) {
-      console.log(err);
+      //console.log(err);
     } else {
-      console.log('Added!');
-      console.log(req.body);
+      //console.log('Added!');
+      //console.log(req.body);
       res.json(service);
     }
   });
 });
 
-app.post('/manage/delete_place', function(req, res) {
+app.post('/manage/delete_place', isAuthenticated, function(req, res) {
   placesDB.remove({ _id: req.body._id }, {}, function(err, numRemoved) {
     if (err) {
-      console.log(err);
+      //console.log(err);
     } else {
-      console.log('Deleted!');
-      console.log(req.body);
+      //console.log('Deleted!');
+      //console.log(req.body);
       initPages();
       res.json({ message: 'deleted!' });
     }
   });
 });
 
-app.post('/manage/delete_service', function(req, res) {
+app.post('/manage/delete_service', isAuthenticated, function(req, res) {
   servicesDB.remove({ _id: req.body._id }, {}, function(err, numRemoved) {
     if (err) {
-      console.log(err);
+      //console.log(err);
     } else {
-      console.log('Deleted!');
-      console.log(req.body);
+      //console.log('Deleted!');
+      //console.log(req.body);
       res.json({ message: 'deleted!' });
     }
   });
@@ -216,11 +232,11 @@ app.get('/:identifier/services', function(req, res) {
 });
 
 app.post('/:identifier/notices/new', function(req, res) {
-  console.log(req.body);
+  //console.log(req.body);
   if (req.body.hasOwnProperty('message')) {
     var notice = { place: req.params.identifier, message: req.body.message, posted: Date.now() };
     noticesDB.insert(notice);
-    console.log('Notice posted: ' + req.body.message);
+    //console.log('Notice posted: ' + req.body.message);
     getNotices(req.params.identifier).exec(function (err, notices) {
       res.json(notices);
     });
@@ -250,13 +266,13 @@ app.get('/twitter/:user', function(req, res) {
             } else {
               tweetCache.set(req.params.user, data);
               res.json(data);
-              console.log('stored in cache');
+              //console.log('stored in cache');
             }
           }
         );
       } else { // user found in cache
         res.json(value);
-        console.log('retrieved from cache');
+        //console.log('retrieved from cache');
       }
     } else {
       res.status(404).send('Error');
@@ -307,14 +323,14 @@ app.post('/track', function(req, res) {
         updatePeople(req.body.apiRoot, req.body.place, attributes);
     });
     trackers[url] = task;
-    console.log('Running tracker.');
-    console.log(attributes);
+    //console.log('Running tracker.');
+    //console.log(attributes);
     task.run();
   }
 });
 
 function updatePeople(apiRoot, place, attributes) {
-  console.log('Updating tracker.');
+  //console.log('Updating tracker.');
   request.get(apiRoot + place, function (err, res, body) {
     if (!err) {
       try {
@@ -359,7 +375,7 @@ function updatePerson(id, place, itemObj, attributes) {
     peopleDB.update({ uuid: id, place: place }, person, { upsert: true });
     peopleDB.persistence.compactDatafile();
   }
-  console.log(person);
+  //console.log(person);
 }
 
 function initPages() {
@@ -375,10 +391,54 @@ function isEmpty(obj) {
   return !Object.keys(obj).length;
 }
 
+function isValid(enteredPass) {
+  return password == enteredPass && typeof enteredPass != 'undefined';
+}
+
+function isAuthenticated(req, res, next) {
+  if (isValid(req.session.password)) {
+    next();
+  } else {
+    next(new Error(401));
+  }
+}
+
 // Static files directory
 app.use(express.static(publicDir));
 
 var port = process.env.PORT || 3000;
-app.listen(port, function() {
-  console.log("smartpaces-server is listening on port", port);
+
+function startServer() {
+  app.listen(port, function() {
+    console.log("smartspaces-server is listening on port", port); 
+  });
+}
+
+// Settings and password initialization
+var twitter;
+password = null;
+settingsDB.findOne({}, function (err, settings) {
+  if (settings != null && settings.password != null) {
+    twitter = new twitterAPI({
+      consumerKey: settings.twitterKey,
+      consumerSecret: settings.twitterSecret
+    });
+    password = settings.password;
+    startServer();
+  } else {
+    read({ prompt: 'Set an admin password: ', silent: true }, function(er, newPassword) {
+      read({ prompt: 'Confirm password: ', silent: true }, function(er, confirmPassword) {
+        if (newPassword == confirmPassword) {
+          settingsDB.remove({}, { multi: true });
+          var hash = md5(newPassword);
+          settingsDB.insert({ password: hash }, function(err, newSettings) {
+            console.log('Password set!');
+            password = hash;
+            startServer();
+          });
+        }
+      });
+    });
+    
+  }
 });

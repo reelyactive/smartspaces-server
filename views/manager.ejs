@@ -195,7 +195,7 @@
 			  border: 1px solid white;
 			}
 
-			input[type=text] {
+			input[type=text], input[type=password] {
 			  border-radius: 10px;
 			  padding: 5px;
 			  width: 200px;
@@ -218,7 +218,7 @@
 			  display: none;
 			}
 
-			.save, .add {
+			.save, .add, .login {
 			  background-color: #aeaeae;
 			  color: black;
 			  border-radius: 10px;
@@ -231,7 +231,7 @@
 			  display: inline-block;
 			}
 
-			.save:hover, .add:hover {
+			.save:hover, .add:hover, .login:hover {
 			  background-color: white;
 			}
 
@@ -290,6 +290,16 @@
 				font-style: normal;
 				font-weight: 300;
 			}
+			
+			.login-form {
+				text-align: center;
+				margin-top: 15px;
+				font-size: 18px;
+			}
+			
+			.login-form .label {
+				margin-bottom: 10px;
+			}
 		</style>
     <script src="//ajax.googleapis.com/ajax/libs/jquery/2.1.1/jquery.min.js"></script>
   </head>
@@ -345,6 +355,21 @@
 			  $.post('/manage/delete_'+type, getFormData(form), function(result) {
 					  form.remove();
 					  $('#selector'+getID(form)).remove();
+				  }, 'json'
+				);
+			}
+			
+			function login() {
+				$('.login').html('Logging in...');
+				var form = $('.login-form');
+				form.css({ opacity: 0.5 });
+				$.post('/manage/login', getFormData(form), function(result) {
+					  if (result.message == 'success') {
+							location.reload();
+						} else {
+							form.css({ opacity: 1 });
+							$('.login').html('Login');
+						}
 				  }, 'json'
 				);
 			}
