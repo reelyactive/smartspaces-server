@@ -14,6 +14,14 @@
 		<input type="text" id="name" <% if (service != null) { %>value="<%= service.name %>"<% } %> />
 	</div>
 	<div class="form-item">
+		<div class="label">JSON Attribute <span class="eg">(e.g. "instagramUsername")</span></div>
+		<input type="text" id="attributeName" class="long" <% if (service != null) { %>value="<%= service.attributeName %>"<% } %> />
+	</div>
+	<div class="form-item">
+		<div class="label">URL Structure <span class="eg">(e.g. "http://instagram.com/%attribute%")</span></div>
+		<input type="text" id="urlStructure" <% if (service != null) { %>value="<%= service.urlStructure %>"<% } %> />
+	</div>
+	<div class="form-item">
 		<div class="label">Display Type</div>
 		<select id="displayType">
 			<option></option>
@@ -22,12 +30,11 @@
 		</select>
 	</div>
 	<div class="form-item">
-		<div class="label">JSON Attribute <span class="eg">(e.g. "instagramUsername")</span></div>
-		<input type="text" id="attributeName" class="long" <% if (service != null) { %>value="<%= service.attributeName %>"<% } %> />
-	</div>
-	<div class="form-item">
-		<div class="label">URL Structure <span class="eg">(e.g. "http://instagram.com/%attribute%")</span></div>
-		<input type="text" id="urlStructure" <% if (service != null) { %>value="<%= service.urlStructure %>"<% } %> />
+		<div class="label">Retrieval Mode</div>
+		<select id="retrievalMode">
+			<option value="direct" <% if (service == null || (service != null && service.retrievalMode != 'proxy')) { %>selected<% } %>>Direct</option>
+			<option value="proxy" <% if (service != null && service.retrievalMode == 'proxy') { %>selected<% } %>>Proxy</option>
+		</select>
 	</div>
 	<div class="save">Save</div>
 	<div class="saved">Saved!</div>
