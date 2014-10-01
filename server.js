@@ -5,6 +5,11 @@ var md5 = require('MD5');
 var read = require('read');
 var twitterAPI = require('node-twitter-api');
 var app = express();
+var Datastore = require('nedb');
+var NodeCache = require('node-cache');
+var bodyParser = require('body-parser');
+var request = require('request');
+var PeriodicTask = require('periodic-task');
 var HTTP_PORT = 3000;
 
 /**
@@ -16,10 +21,11 @@ var HTTP_PORT = 3000;
 function SmartspacesServer(options) {
   options = options || {};
   var httpPort = options.httpPort || HTTP_PORT;
-  var password = options.adminPass || 'admin';
+  var password = options.authPass || 'admin';
 
   // Rendering engine
   app.engine('ejs', engine);
+  app.set('views', __dirname + '/views');
   app.set('view engine', 'ejs');
 
   // Sessions
@@ -27,34 +33,27 @@ function SmartspacesServer(options) {
   app.use(express.session({secret: 'ZvGG0CuLh2vU5Xo7TX0t62FKHOyzT7Ow'}));
 
   // Databases
-  var Datastore = require('nedb')
-    , peopleDB = new Datastore({ filename: 'people.db', autoload: true })
+  var peopleDB = new Datastore({ filename: 'people.db', autoload: true })
     , noticesDB = new Datastore({ filename: 'notices.db', autoload: true })
     , servicesDB = new Datastore({ filename: 'services.db', autoload: true })
     , placesDB = new Datastore({ filename: 'places.db', autoload: true })
     , settingsDB = new Datastore({ filename: 'settings.db', autoload: true });
 
   // Caching for social API responses
-  var NodeCache = require('node-cache');
   var tweetCache = new NodeCache({ stdTTL: 300 });
   var remoteCache = new NodeCache({ stdTTL: 86400 });
 
   // Parser for incoming POST requests
-  var bodyParser = require('body-parser')
   app.use(bodyParser.json());       // to support JSON-encoded bodies
   app.use(bodyParser.urlencoded({ extended: false })); // to support URL-encoded bodies
 
-  // Request module for retrieving JSON
-  var request = require('request');
-
-  // Periodic tracking of JSON attributes at a location
-  var PeriodicTask = require('periodic-task');
   var trackers = {};
 
   // Directory containing the web client.
   var publicDir = '../smartspaces-client';
 
   // Read places db and create list of acceptable pages on which to serve the web client.
+  var pages;
   initPages();
   
   // Set up Twitter credentials and initialize settings DB
@@ -436,3 +435,5 @@ function SmartspacesServer(options) {
     console.log("smartspaces-server is listening on port", port);
   });
 }
+
+module.exports = SmartspacesServer;
