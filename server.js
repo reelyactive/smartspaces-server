@@ -50,7 +50,7 @@ function SmartspacesServer(options) {
   var trackers = {};
 
   // Directory containing the web client.
-  var publicDir = '../smartspaces-client';
+  var publicDir = __dirname + '/../smartspaces-client';
 
   // Read places db and create list of acceptable pages on which to serve the web client.
   var pages;
