@@ -301,8 +301,8 @@ function SmartspacesServer(options) {
   });
 
   app.get('/:identifier/recent', function(req, res) {
-    var yesterday = Date.now() - (1000 * 60 * 60 * 24);
-    peopleDB.find({ place: req.params.identifier, lastSeen: { $gt: yesterday} }, function (err, people) {
+    var yesterday = Date.now() - (1000 * 60 * 60 * 24 * 7);
+    peopleDB.find({ place: req.params.identifier }, function (err, people) {
       res.json(people);
     });
   });
