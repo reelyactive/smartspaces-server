@@ -39,9 +39,10 @@ function SmartspacesServer(options) {
     , placesDB = new Datastore({ filename: 'places.db', autoload: true })
     , settingsDB = new Datastore({ filename: 'settings.db', autoload: true });
 
-  // Caching for social API responses
+  // Caching
   var tweetCache = new NodeCache({ stdTTL: 300 });
   var remoteCache = new NodeCache({ stdTTL: 86400 });
+  var loadableCache = new NodeCache({ stdTTL: 86400 });
 
   // Parser for incoming POST requests
   app.use(bodyParser.json());       // to support JSON-encoded bodies
@@ -220,6 +221,16 @@ function SmartspacesServer(options) {
   app.get('/jsontest', function(req, res) {
     res.sendfile(path.resolve(publicDir + "/test.json"));
   });
+  
+  app.get('/settings', function(req, res) {
+    settingsDB.findOne({}, function (err, settings) {
+      if (settings != null) {
+        res.json(settings);
+      } else {
+        res.status(404).send('Not found');
+      }
+    });
+  });
 
   app.get('/:identifier', function(req, res) {
     if (pages.indexOf(req.params.identifier) != -1) {
@@ -304,6 +315,35 @@ function SmartspacesServer(options) {
     var yesterday = Date.now() - (1000 * 60 * 60 * 24 * 7);
     peopleDB.find({ place: req.params.identifier }, function (err, people) {
       res.json(people);
+    });
+  });
+  
+  app.post('/loadable', function(req, res) {
+    var url = req.body.url;
+    var loadable = '';
+    loadableCache.get(url, function(error, value) { // check cache
+      if (!error) {
+        if (isEmpty(value)) { // url not found in cache
+          request.get(url, function (error, response, body) {
+            if (!error) {
+              if (response.headers['x-frame-options'] == 'sameorigin') {
+                loadable = 'false';
+              } else {
+                loadable = 'true';
+              }
+              loadableCache.set(url, { loadable: loadable });
+              res.json({ loadable: loadable });
+            } else {
+              res.status(404).send('Error');
+            }
+          });
+        } else {
+          console.log('Found in cache: ' + value[url].loadable);
+          res.json(value[url]);
+        }
+      } else {
+        res.status(404).send('Error');
+      }
     });
   });
 
