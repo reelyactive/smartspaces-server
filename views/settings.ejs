@@ -18,11 +18,11 @@
 			</div>
 			<div class="form-item">
 				<div class="label">Refresh Interval <span class="eg">(in seconds)</span></div>
-				<input type="text" id="refreshInterval" class="short" <% if (settings.hasOwnProperty('refreshInterval')) { %>value="<%= settings.refreshInterval %>"<% } else { %>value="60"<% } %> />
+				<input type="text" id="refreshInterval" class="short number" <% if (settings.hasOwnProperty('refreshInterval')) { %>value="<%= settings.refreshInterval %>"<% } else { %>value="60"<% } %> />
 			</div>
 			<div class="form-item">
 				<div class="label">Ambient Mode Cycle Interval <span class="eg">(in seconds)</span></div>
-				<input type="text" id="ambientCycleInterval" class="short" <% if (settings.hasOwnProperty('ambientCycleInterval')) { %>value="<%= settings.ambientCycleInterval %>"<% } else { %>value="10"<% } %> />
+				<input type="text" id="ambientCycleInterval" class="short number" <% if (settings.hasOwnProperty('ambientCycleInterval')) { %>value="<%= settings.ambientCycleInterval %>"<% } else { %>value="10"<% } %> />
 			</div>
 			<div class="save">Save</div>
 			<div class="saved">Saved!</div>

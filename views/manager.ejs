@@ -381,6 +381,12 @@
 						alerts.push(label + " must contain the string '%attribute%'.");
 					}
 					
+					if ($(this).hasClass('number') && isNaN(val)) {
+						valid = false;
+						var label = getLabel(this);
+						alerts.push(label + " must be a number.");
+					}
+					
 				});
 				$(alerts).each(function() {
 					$('.alerts').append($('<div>'+this+'</div>'));
