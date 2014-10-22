@@ -1,0 +1,68 @@
+<!DOCTYPE HTML>
+<html>
+  <head>
+    <title> Smart Spaces by reelyActive </title>
+    <link rel="stylesheet" href="/rootpage/style/main.css">
+  </head>
+  <body>
+    <div id="content">
+      <a id="start"><img src="/rootpage/images/logo.png"></a>
+      <form action="" method="get">
+        Select a Smart Space:
+        <select name="place" id="places">
+					<option selected></option>
+        </select>
+      </form>
+      <br> <br>
+      <p> I would rather: </p>
+      <p> <a href="#understand"> Understand </a> &nbsp; | &nbsp; <a href="#participate"> Participate </a> &nbsp; | &nbsp; <a href="#develop"> Develop </a> </p>
+    </div>
+    <div id="explanations">
+      <a id="understand"><h2> What are Smart Spaces? </h2></a>
+      <p> Smart Spaces are contextually aware environments.  They understand who and what is present.  This website allows you to visualise and discover the people and things located in any given Smart Space right now. </p>
+      <p> Click on anyone to discover more about them via the circular icons.  And select one of three views: Who is present, What is present or the Social Scene. </p>
+      <img src="/rootpage/images/interface.png">
+      <p> Smart Spaces are equipped with sensors that identify people and objects via their wireless devices (see <a href="http://context.reelyactive.com/technology.html" target="_blank">reelyActive technology</a>).  Each person and object is linked with any digital content they decide to share (learn how to <a href="#participate">participate</a>).  The result is a real-time digital understanding of the real world (what we call <a href="http://context.reelyactive.com/context.html" target="_blank">hyperlocal context</a>). </p>
+      <a id="participate"><h2> How can I participate? </h2></a>
+      <p> In order for a Smart Space to detect you and share your digital persona, you need to:
+        <ul>
+          <li> carry a uniquely identifiable wireless device (smartphone, wearable, etc.)
+          <li> opt-in and associate your device with whatever you care to share
+        </ul>
+        Curious?  Try it in two easy steps!
+      </p>
+      <h3> 1. What would you care to share? </h3>
+      <div class="split">
+        Enter your info:
+        <form>
+          <input type="text" name="firstName" placeholder="First Name"><br>
+          <input type="text" name="lastName" placeholder="Last Name"><br>
+          <input type="text" name="portraitImageUrl" placeholder="Portrait Image URL"><br>
+          <input type="text" name="companyName" placeholder="Company Name"><br>
+          <input type="text" name="companyUrl" placeholder="Company Webpage URL"><br>
+          <input type="text" name="linkedInPublicUrl" placeholder="LinkedIn Public URL"><br>
+          <input type="text" name="twitterPersonalScreenName" placeholder="Twitter Handle (without @)"><br>
+          <input type="text" name="googlePlusProfileName" placeholder="Google+ Profile Name"><br>
+          <input type="text" name="instagramProfileName" placeholder="Instagram Profile Name"><br>
+          <input type="text" name="soundcloudProfileName" placeholder="SoundCloud Profile Name"><br>
+        </form>
+      </div>
+      <div class="split">
+        This is how it will be shared:
+        <pre id="json"></pre>
+      </div>
+      <br style="clear:both">
+      <h3> 2. Associate this with your wireless device </h3>
+      <p> We'll be providing details shortly. </p>
+      <a id="develop"><h2> How can I develop with Smart Spaces? </h2></a>
+      <p> At reelyActive, we believe in an open Internet of Things.  All of the code behind Smart Spaces is open source.  It's built on HTML, CSS and JavaScript, including Node.js on the server side. </p>
+      <p> We suggest that you start with our <a href="http://reelyactive.github.io/make-a-smartspace.html" target="_blank"> Make a Smart Space </a> tutorial.  Then you can find plenty of other resources on <a href="http://reelyactive.github.io" target="_blank">diyActive</a>, our developer page.  Or you can simply dive into our <a href="https://github.com/reelyactive" target="_blank">GitHub</a> and <a href="https://www.npmjs.org/~reelyactive" target="_blank">npmjs</a> pages. </p>
+      <br><br><br><br>
+    </div>
+    <div id="content">
+      <p>Developed by <a href="http://context.reelyactive.com" target="_blank">reelyActive</a> &nbsp; | &nbsp; Go <a href="#start">back to the top</a></p>
+    </div>
+    <script type="text/javascript" src="/rootpage/js/jquery.min.js"></script>
+    <script type="text/javascript" src="/rootpage/js/script.js"></script>
+  </body>
+</html>

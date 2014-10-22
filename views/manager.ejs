@@ -304,6 +304,12 @@
 			.login-form .label {
 				margin-bottom: 10px;
 			}
+			
+			.alerts {
+				margin-top: 15px;
+				color: #c4481c;
+				font-style: italic;
+			}
 		</style>
     <script src="//ajax.googleapis.com/ajax/libs/jquery/2.1.1/jquery.min.js"></script>
   </head>
@@ -328,10 +334,64 @@
 			function getID(form) {
 			  return $('#_id', form).val();
 			}
+			
+			function getLabel(item) {
+				var labelDiv = $('.label', $(item).parents('.form-item')).clone();
+				$('span', labelDiv).remove();
+				return labelDiv.html().trim();
+			}
+			
+			function validURL(str) {
+			  if(!/^http:\/\/\w+(\.\w+)*(:[0-9]+)?\/?(\/[.\w]*)*$/.test(str)) {
+			    return false;
+			  } else {
+			    return true;
+			  }
+			}
+			
+			function isValid(form) {
+				var valid = true;
+				alerts = [];
+				$('.alerts').empty();
+				$('input, select', form).each(function() {
+					
+					var val = $(this).val();
+					
+					if ($(this).hasClass('notblank') && val == '') {
+						valid = false;
+						var label = getLabel(this);
+						alerts.push(label + " can't be blank.");
+					}
+					
+					if ($(this).hasClass('nospaces') && /\s/.test(val)) {
+						valid = false;
+						var label = getLabel(this);
+						alerts.push(label + " can't contain spaces.");
+					}
+					
+					if ($(this).hasClass('url') && !validURL(val)) {
+						valid = false;
+						var label = getLabel(this);
+						alerts.push(label + " must be a valid URL.");
+					}
+					
+					if ($(this).hasClass('attribute') && val.indexOf('%attribute%') == -1) {
+						valid = false;
+						var label = getLabel(this);
+						alerts.push(label + " must contain the string '%attribute%'.");
+					}
+					
+				});
+				$(alerts).each(function() {
+					$('.alerts').append($('<div>'+this+'</div>'));
+				});
+				return valid;
+			}
 
 			function saveItem(type, button) {
+				var form = getForm(button);
+				if (!isValid(form)) return false;
 			  $(button).html("Saving...")
-			  var form = getForm(button);
 			  form.css({ opacity: 0.5 });
 				$.post('/manage/update_'+type, getFormData(form), function(result) {
 					  form.css({ opacity: 1.0 });
@@ -342,8 +402,9 @@
 			}
 
 			function addItem(type, button) {
+				var form = getForm(button);
+				if (!isValid(form)) return false;
 			  $(button).html("Adding...")
-			  var form = getForm(button);
 			  form.css({ opacity: 0.5 });
 				$.post('/manage/add_'+type, getFormData(form), function(place) {
 					  form.css({ opacity: 1.0 });

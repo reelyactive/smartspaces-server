@@ -11,22 +11,23 @@
 	<input type="hidden" id="_id" <% if (place != null) { %>value="<%= place._id %>"<% } %> />
 	<div class="form-item">
 		<div class="label">Place Name <span class="eg">(e.g. "Notman House")</span></div>
-		<input type="text" id="displayName" <% if (place != null) { %>value="<%= place.displayName %>"<% } %> />
+		<input type="text" class="notblank" id="displayName" <% if (place != null) { %>value="<%= place.displayName %>"<% } %> />
 	</div>
 	<div class="form-item">
 		<div class="label">Identifier <span class="eg">(e.g. "notman")</span></div>
-		<input type="text" id="identifier" <% if (place != null) { %>value="<%= place.identifier %>"<% } %> />
+		<input type="text" class="notblank nospaces" id="identifier" <% if (place != null) { %>value="<%= place.identifier %>"<% } %> />
 	</div>
 	<div class="form-item">
 		<div class="label">API Root</div>
-		<span class="label-url"><input type="text" id="apiUrl" class="long" <% if (place != null) { %>value="<%= place.apiUrl %>"<% } else { %>value="http://"<% } %> />
+		<span class="label-url"><input type="text" id="apiUrl" class="long url notblank" <% if (place != null) { %>value="<%= place.apiUrl %>"<% } else { %>value="http://"<% } %> />
 	</div>
 	<div class="form-item">
 		<div class="label">Social Feeds</div>
-		<span class="label-url">twitter.com/</span><input type="text" id="twitter" <% if (place != null) { %>value="<%= place.twitter %>"<% } %> />
+		<span class="label-url">twitter.com/</span><input type="text" id="twitter" class="nospaces" <% if (place != null) { %>value="<%= place.twitter %>"<% } %> />
 	</div>
 	<div class="save">Save</div>
 	<div class="saved">Saved!</div>
 	<div class="add">Add</div>
 	<div class="added">Added!</div>
+	<div class="alerts"></div>
 </div>

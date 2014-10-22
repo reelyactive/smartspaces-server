@@ -52,6 +52,7 @@ function SmartspacesServer(options) {
 
   // Directory containing the web client.
   var publicDir = __dirname + '/../smartspaces-client';
+  var rootpageDir = __dirname + '/web';
 
   // Read places db and create list of acceptable pages on which to serve the web client.
   var pages;
@@ -72,8 +73,7 @@ function SmartspacesServer(options) {
 
   // Request handlers
   app.get('/', function(req, res) {
-    // Redirect the root path to our default area.
-    res.redirect(307, '/notman');
+    res.sendfile(rootpageDir + '/index.html');
   });
 
   app.get('/manage', function(req, res) {
@@ -231,6 +231,13 @@ function SmartspacesServer(options) {
       }
     });
   });
+  
+  app.get('/places', function(req, res) {
+    placesDB.find({}, function (err, places) {
+      res.json(places);
+    });
+  });
+  
 
   app.get('/:identifier', function(req, res) {
     if (pages.indexOf(req.params.identifier) != -1) {
@@ -338,7 +345,6 @@ function SmartspacesServer(options) {
             }
           });
         } else {
-          console.log('Found in cache: ' + value[url].loadable);
           res.json(value[url]);
         }
       } else {
@@ -467,8 +473,9 @@ function SmartspacesServer(options) {
     }
   }
 
-  // Static files directory
+  // Static files directories
   app.use(express.static(publicDir));
+  app.use('/rootpage', express.static(rootpageDir));
 
   var port = process.env.PORT || httpPort;
   app.listen(port, function() {

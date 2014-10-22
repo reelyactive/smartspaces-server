@@ -11,15 +11,15 @@
 	<input type="hidden" id="_id" <% if (service != null) { %>value="<%= service._id %>"<% } %> />
 	<div class="form-item">
 		<div class="label">Service Name <span class="eg">(e.g. "Instagram")</span></div>
-		<input type="text" id="name" <% if (service != null) { %>value="<%= service.name %>"<% } %> />
+		<input type="text" id="name" class="notblank" <% if (service != null) { %>value="<%= service.name %>"<% } %> />
 	</div>
 	<div class="form-item">
 		<div class="label">JSON Attribute <span class="eg">(e.g. "instagramUsername")</span></div>
-		<input type="text" id="attributeName" class="long" <% if (service != null) { %>value="<%= service.attributeName %>"<% } %> />
+		<input type="text" id="attributeName" class="long notblank" <% if (service != null) { %>value="<%= service.attributeName %>"<% } %> />
 	</div>
 	<div class="form-item">
 		<div class="label">URL Structure <span class="eg">(e.g. "http://instagram.com/%attribute%")</span></div>
-		<input type="text" id="urlStructure" <% if (service != null) { %>value="<%= service.urlStructure %>"<% } %> />
+		<input type="text" id="urlStructure" class="attribute" <% if (service != null) { %>value="<%= service.urlStructure %>"<% } %> />
 	</div>
 	<div class="form-item">
 		<div class="label">Display Type</div>
@@ -32,6 +32,7 @@
 	<div class="form-item">
 		<div class="label">Retrieval Mode</div>
 		<select id="retrievalMode">
+			<option></option>
 			<option value="direct" <% if (service == null || (service != null && service.retrievalMode != 'proxy')) { %>selected<% } %>>Direct</option>
 			<option value="proxy" <% if (service != null && service.retrievalMode == 'proxy') { %>selected<% } %>>Proxy</option>
 		</select>
@@ -40,4 +41,5 @@
 	<div class="saved">Saved!</div>
 	<div class="add">Add</div>
 	<div class="added">Added!</div>
+	<div class="alerts"></div>
 </div>
