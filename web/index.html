@@ -10,7 +10,7 @@
       <form action="" method="get">
         Visit a Smart Space:
         <select name="place" id="places">
-					<option selected></option>
+          <option selected></option>
         </select>
       </form>
       <br> <br>
@@ -26,34 +26,35 @@
       <a id="participate"><h2> How can I participate? </h2></a>
       <p> In order for a Smart Space to detect you and share your digital persona, you need to:
         <ul>
+          <li> host your digital persona online
           <li> carry a uniquely identifiable wireless device (smartphone, wearable, etc.)
-          <li> opt-in and associate your device with whatever you care to share
+          <li> opt-in and associate your device with your digital persona
         </ul>
-        Curious?  Try it in two easy steps!
+        Curious?  Try <i>temporarily</i> participating in a Smart Space in two easy steps (no device required)!
       </p>
-      <h3> 1. What would you care to share? </h3>
-      <div class="split">
-        Enter your info:
-        <form>
+      <form id="checkin" action="" method="post">
+        <h3> 1. What would you care to share? </h3>
+        <div class="split">
+          Enter your digital persona:<br>
           <input type="text" name="firstName" placeholder="First Name"><br>
           <input type="text" name="lastName" placeholder="Last Name"><br>
-          <input type="text" name="portraitImageUrl" placeholder="Portrait Image URL"><br>
           <input type="text" name="companyName" placeholder="Company Name"><br>
           <input type="text" name="companyUrl" placeholder="Company Webpage URL"><br>
-          <input type="text" name="linkedInPublicUrl" placeholder="LinkedIn Public URL"><br>
           <input type="text" name="twitterPersonalScreenName" placeholder="Twitter Handle (without @)"><br>
-          <input type="text" name="googlePlusProfileName" placeholder="Google+ Profile Name"><br>
-          <input type="text" name="instagramProfileName" placeholder="Instagram Profile Name"><br>
-          <input type="text" name="soundcloudProfileName" placeholder="SoundCloud Profile Name"><br>
-        </form>
-      </div>
-      <div class="split">
-        This is how it will be shared:
-        <pre id="json"></pre>
-      </div>
-      <br style="clear:both">
-      <h3> 2. Associate this with your wireless device </h3>
-      <p> We'll be providing details shortly. </p>
+          <input type="hidden" name="portraitImageUrl" value="http://reelyactive.com/images/barnowl.jpg">
+          <input type="hidden" name="place" value="test">
+          <input type="hidden" name="duration" value="15m">
+        </div>
+        <div class="split">
+          This is how it will be shared:
+          <pre id="json"></pre>
+        </div>
+        <br style="clear:both">
+        <h3> 2. Host your digital persona and visit a Smart Space </h3>
+        <p> Click the button to <input type="submit" name="action" value="Host Your Digital Persona"> for 15 minutes. </p>
+        <p> This will redirect you to an instance of our <a href="https://www.npmjs.org/package/json-silo">json-silo</a> where you'll see the link to your hosted data.  There, click the "Visit your Smart Space" button to see yourself and others at <a href="test">The Barn</a>, a virtual Smart Space, until the 15 minutes expire. </p>
+        <p><i> Note that by clicking the button above you agree to having the information you entered hosted on the Internet for 15 minutes, after which time it will be erased from our database.  Remember, The Barn is a publicly-accessible webpage.  What happens on the Internet, stays on the Internet. </i></p>
+      </form>
       <a id="develop"><h2> How can I develop with Smart Spaces? </h2></a>
       <p> At reelyActive, we believe in an open Internet of Things.  All of the code behind Smart Spaces is open source.  It's built on HTML, CSS and JavaScript, including Node.js on the server side. </p>
       <p> We suggest that you start with our <a href="http://reelyactive.github.io/make-a-smartspace.html" target="_blank"> Make a Smart Space </a> tutorial.  Then you can find plenty of other resources on <a href="http://reelyactive.github.io" target="_blank">diyActive</a>, our developer page.  Or you can simply dive into our <a href="https://github.com/reelyactive" target="_blank">GitHub</a> and <a href="https://www.npmjs.org/~reelyactive" target="_blank">npmjs</a> pages. </p>

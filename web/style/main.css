@@ -60,5 +60,6 @@ pre {
 .split {
   padding: 0 1em;
   float: left;
+  max-width: 50%;
 }
 

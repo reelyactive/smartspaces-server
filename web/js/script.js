@@ -4,7 +4,7 @@
  */
 
 
-var DEFAULT_JSON = { person: { } };
+var DEFAULT_JSON = { person: { portraitImageUrl: "http://reelyactive.com/images/barnowl.jpg" } };
 
 
 $(document).ready( function(){
@@ -19,6 +19,9 @@ $(document).ready( function(){
   $('#places').change(function() {
     window.location.href = 'http://' + window.location.host + '/' + $(this).val();
   });
+  $.get("/silourl", function(data) {
+    $('form#checkin').prop("action", data.url + '/add');
+  }, 'json');
 });
 
 
@@ -28,7 +31,7 @@ $("#json").append(JSON.stringify(DEFAULT_JSON, undefined, 2));
 var onInput = function() {
   var personInputs = {};
   $.each($("form").serializeArray(), function() {
-    if ((this.value !== "") && (this.name != "place")) {
+    if ((this.value !== "") && (this.name != "place") && (this.name != "duration")) {
       personInputs[this.name] = this.value;
     }
   });

@@ -11,6 +11,7 @@ var bodyParser = require('body-parser');
 var request = require('request');
 var PeriodicTask = require('periodic-task');
 var HTTP_PORT = 3000;
+var DEFAULT_SILO_URL = "http://localhost:3002";
 
 /**
  * SmartspacesServer Class
@@ -22,6 +23,7 @@ function SmartspacesServer(options) {
   options = options || {};
   var httpPort = options.httpPort || HTTP_PORT;
   var password = options.authPass || 'admin';
+  var siloUrl = options.siloUrl || DEFAULT_SILO_URL;
 
   // Rendering engine
   app.engine('ejs', engine);
@@ -237,7 +239,10 @@ function SmartspacesServer(options) {
       res.json(places);
     });
   });
-  
+
+  app.get('/silourl', function(req, res) {
+    res.json({ url: siloUrl });
+  });  
 
   app.get('/:identifier', function(req, res) {
     if (pages.indexOf(req.params.identifier) != -1) {
