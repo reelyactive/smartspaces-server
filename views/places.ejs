@@ -1,0 +1,26 @@
+<% layout('manager') %>
+<% selected = 'places' %>
+<% include nav %>
+<div class="places content">
+	<div class="left-pane">
+		<div class="explain-header <% if (places.length == 0) { %>empty<% } %>">
+			<div class="has-places">You're hosting smart spaces for the following places:</div>
+			<div class="no-places">You haven't set up any places yet.</div>
+		</div>
+		<div class="place-selectors">
+			<% for (var i = 0; i < places.length; i++) { %>
+			  <div class="place selector" data-identifier="<%= places[i].identifier %>" id="selector<%= places[i]._id %>"><%= places[i].displayName %></div>
+			<% } %>
+		</div>
+		<div class="place selector dummy"></div>
+		<a href="javascript:void(0)" class="add-place add-link">Add a new place</a>
+	</div>
+	<div class="right-pane">
+		<% for (var i = 0; i < places.length; i++) { %>
+			<% place = places[i]; %>
+			<% include place_form %>
+		<% } %>
+		<% place = null %>
+		<% include place_form %>
+	</div>
+</div>

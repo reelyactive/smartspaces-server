@@ -1,0 +1,34 @@
+<% layout('manager') %>
+<% selected = 'settings' %>
+<% include nav %>
+<div class="settings content">
+	<div class="left-pane">
+		<div class="explain-header">Here you can set variables and preferences that are used by the server and client.</div>
+	</div>
+	<div class="right-pane">
+		<div class="form settings-form">
+			<input type="hidden" id="_id" <% if (settings != null) { %>value="<%= settings._id %>"<% } %> />
+			<div class="form-item">
+				<div class="label">Twitter API Key</div>
+				<input type="text" id="twitterKey" class="long" <% if (settings.hasOwnProperty('twitterKey')) { %>value="<%= settings.twitterKey %>"<% } %> />
+			</div>
+			<div class="form-item">
+				<div class="label">Twitter API Secret</div>
+				<input type="text" id="twitterSecret" class="long" <% if (settings.hasOwnProperty('twitterSecret')) { %>value="<%= settings.twitterSecret %>"<% } %> />
+			</div>
+			<div class="form-item">
+				<div class="label">Refresh Interval <span class="eg">(in seconds)</span></div>
+				<input type="text" id="refreshInterval" class="short number" <% if (settings.hasOwnProperty('refreshInterval')) { %>value="<%= settings.refreshInterval %>"<% } else { %>value="60"<% } %> />
+			</div>
+			<div class="form-item">
+				<div class="label">Ambient Mode Cycle Interval <span class="eg">(in seconds)</span></div>
+				<input type="text" id="ambientCycleInterval" class="short number" <% if (settings.hasOwnProperty('ambientCycleInterval')) { %>value="<%= settings.ambientCycleInterval %>"<% } else { %>value="10"<% } %> />
+			</div>
+			<div class="save">Save</div>
+			<div class="saved">Saved!</div>
+			<div class="add">Add</div>
+			<div class="added">Added!</div>
+			<div class="alerts"></div>
+		</div>
+	</div>
+</div>

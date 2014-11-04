@@ -9,6 +9,10 @@
     "body-parser": "~1.6.3",
     "request": "~2.40.0",
     "periodic-task": "~0.1.0",
-    "MD5": "~1.2.1"
+    "MD5": "~1.2.1",
+    "ejs": "~1.0.0",
+    "ejs-locals": "~1.0.2",
+    "read": "~1.0.5",
+    "utils-merge": "~1.0.0"
   }
 }

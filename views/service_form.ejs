@@ -1,0 +1,45 @@
+<div class="form service-form <% if (service == null) { %>new-form<% } %>" <% if (service != null) { %>id="<%= service._id %>"<% } %>>
+	<% if (service != null) { %>
+		<div class="remove">
+			<a href="javascript:void(0)" class="initial">Remove this service</a>
+			<div class="confirm">Really remove?
+				<a href="javascript:void(0)" class="confirm-remove">yes</a> /
+				<a href="javascript:void(0)" class="dont-remove">no</a>
+			</div>
+		</div>
+	<% } %>
+	<input type="hidden" id="_id" <% if (service != null) { %>value="<%= service._id %>"<% } %> />
+	<div class="form-item">
+		<div class="label">Service Name <span class="eg">(e.g. "Instagram")</span></div>
+		<input type="text" id="name" class="notblank" <% if (service != null) { %>value="<%= service.name %>"<% } %> />
+	</div>
+	<div class="form-item">
+		<div class="label">JSON Attribute <span class="eg">(e.g. "instagramUsername")</span></div>
+		<input type="text" id="attributeName" class="long notblank" <% if (service != null) { %>value="<%= service.attributeName %>"<% } %> />
+	</div>
+	<div class="form-item">
+		<div class="label">URL Structure <span class="eg">(e.g. "http://instagram.com/%attribute%")</span></div>
+		<input type="text" id="urlStructure" class="attribute" <% if (service != null) { %>value="<%= service.urlStructure %>"<% } %> />
+	</div>
+	<div class="form-item">
+		<div class="label">Display Type</div>
+		<select id="displayType">
+			<option></option>
+			<option value="inline" <% if (service != null && service.displayType == 'inline') { %>selected<% } %>>Inline</option>
+			<option value="fullscreen" <% if (service != null && service.displayType == 'fullscreen') { %>selected<% } %>>Fullscreen</option>
+		</select>
+	</div>
+	<div class="form-item">
+		<div class="label">Retrieval Mode</div>
+		<select id="retrievalMode">
+			<option></option>
+			<option value="direct" <% if (service == null || (service != null && service.retrievalMode != 'proxy')) { %>selected<% } %>>Direct</option>
+			<option value="proxy" <% if (service != null && service.retrievalMode == 'proxy') { %>selected<% } %>>Proxy</option>
+		</select>
+	</div>
+	<div class="save">Save</div>
+	<div class="saved">Saved!</div>
+	<div class="add">Add</div>
+	<div class="added">Added!</div>
+	<div class="alerts"></div>
+</div>
