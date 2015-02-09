@@ -1,3 +1,4 @@
+var http = require('http');
 var path = require('path');
 var express = require('express');
 var engine = require('ejs-locals');
@@ -24,6 +25,7 @@ function SmartspacesServer(options) {
   var httpPort = options.httpPort || HTTP_PORT;
   var password = options.authPass || 'admin';
   var siloUrl = options.siloUrl || DEFAULT_SILO_URL;
+  var placesUrl = options.placesUrl || null;
 
   // Rendering engine
   app.engine('ejs', engine);
@@ -245,21 +247,74 @@ function SmartspacesServer(options) {
   });  
 
   app.get('/:identifier', function(req, res) {
-    if (pages.indexOf(req.params.identifier) != -1) {
-      res.sendfile(path.resolve(publicDir + "/index.html"));
-    } else {
-      res.status(404).send('Not found');
+    if(placesUrl){
+      http.get(placesUrl + '/' + req.params.identifier, function(rs) {
+        switch(rs.statusCode) {
+          case 404:
+            res.status(404).send('Not found');
+            break;
+          case 403:
+            res.status(403).send('Forbidden');
+            break;
+          case 401:
+            res.status(401).send('Unauthorized');
+            break;
+          case 407:
+            res.status(407).send('Proxy Authentication Required');
+            break;
+          case 500:
+            res.status(500).send('Internal Server Error');
+            break;
+          case 200:
+            res.sendfile(path.resolve(publicDir + "/index.html"));
+            break;
+          default:
+            res.status(404).send('Status ' + rs.statusCode + ' Identifier: ' +
+                                 req.params.identifier);
+            break;
+        }
+      }).on('error', function(e) {
+        try {
+          res.status(404).send('Got error: ' + e.message);
+        }
+        catch(err) {
+          console.log(e.message);
+        }
+      });
+    }
+    else {
+      if (pages.indexOf(req.params.identifier) != -1) {
+        res.sendfile(path.resolve(publicDir + "/index.html"));
+      }
+      else {
+        res.status(404).send('Not found');
+      }
     }
   });
 
   app.get('/:identifier/info', function(req, res) {
-    placesDB.find({ identifier: req.params.identifier }, function (err, places) {
-      if (places.length > 0) {
-        res.json(places[0]);
-      } else {
-        res.status(404).send('Not found');
-      }
-    });
+    if(placesUrl){
+      http.get(placesUrl + '/' + req.params.identifier, function(rs) {
+        var data = '';
+        rs.on('data', function (chunk) {
+          data += chunk;
+        });
+        rs.on('end', function () {
+          res.json(JSON.parse(data));
+        });
+      }).on('error', function(e) {
+        res.status(404).send('Got error: ' + e.message);
+      }); 
+    }
+    else {
+      placesDB.find({ identifier: req.params.identifier }, function (err, places) {
+        if (places.length > 0) {
+          res.json(places[0]);
+        } else {
+          res.status(404).send('Not found');
+        }
+      });
+    }
   });
 
   app.get('/:identifier/notices', function(req, res) {
