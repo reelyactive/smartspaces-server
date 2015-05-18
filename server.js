@@ -13,6 +13,7 @@ var request = require('request');
 var PeriodicTask = require('periodic-task');
 var HTTP_PORT = 3000;
 var DEFAULT_SILO_URL = "http://localhost:3002";
+var DEFAULT_UNLISTED_PLACES = false;
 
 /**
  * SmartspacesServer Class
@@ -26,6 +27,7 @@ function SmartspacesServer(options) {
   var password = options.authPass || 'admin';
   var siloUrl = options.siloUrl || DEFAULT_SILO_URL;
   var placesUrl = options.placesUrl || null;
+  var unlistedPlaces = options.unlistedPlaces || DEFAULT_UNLISTED_PLACES;
 
   // Rendering engine
   app.engine('ejs', engine);
@@ -237,9 +239,14 @@ function SmartspacesServer(options) {
   });
   
   app.get('/places', function(req, res) {
-    placesDB.find({}, function (err, places) {
-      res.json(places);
-    });
+    if(unlistedPlaces === true) {
+      res.json( [] );
+    }
+    else {
+      placesDB.find({}, function (err, places) {
+        res.json(places);
+      });
+    }
   });
 
   app.get('/silourl', function(req, res) {
