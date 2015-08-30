@@ -1,69 +1,127 @@
 <!DOCTYPE HTML>
 <html>
   <head>
-    <title> Smart Spaces by reelyActive </title>
+    <title> reelyActive Smart Spaces </title>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/3.3.5/css/bootstrap.min.css" rel="stylesheet">
     <link rel="stylesheet" href="/rootpage/style/main.css">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/angular.js/1.4.1/angular.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/angular-ui-bootstrap/0.13.1/ui-bootstrap-tpls.min.js"></script>
+    <script type="text/javascript" src="/rootpage/js/smartspaces.js"></script>
   </head>
-  <body>
-    <div id="content">
-      <a id="start"><img src="/rootpage/images/logo.png"></a>
-      <form action="" method="get">
-        Visit a Smart Space:
-        <select name="place" id="places">
-          <option selected></option>
-        </select>
-      </form>
-      <br> <br>
-      <p> I would rather: </p>
-      <p> <a href="#understand"> Understand </a> &nbsp; | &nbsp; <a href="#participate"> Participate </a> &nbsp; | &nbsp; <a href="#develop"> Develop </a> </p>
-    </div>
-    <div id="explanations">
-      <a id="understand"><h2> What are Smart Spaces? </h2></a>
-      <p> Smart Spaces are contextually aware environments.  They understand who and what is present.  This website allows you to visualise and discover the people and things located in any given Smart Space right now. </p>
-      <p> Click on anyone to discover what they're sharing via the circular icons.  And select one of three views: Who is present, What is present or the Social Scene. </p>
-      <img src="/rootpage/images/interface.png">
-      <p> Smart Spaces are equipped with sensors that identify people and objects via their wireless devices (see <a href="http://context.reelyactive.com/technology.html" target="_blank">reelyActive technology</a>).  Each person and object is linked with any digital content, which we call "stories", that they decide to share (learn how to <a href="#participate">participate</a>).  The result is a real-time digital understanding of the real world (what we call <a href="http://context.reelyactive.com/context.html" target="_blank">hyperlocal context</a>). </p>
-      <a id="participate"><h2> How can I participate? </h2></a>
-      <p> In order for a Smart Space to detect you and share your stories, you need to:
-        <ul>
-          <li> host your stories online
-          <li> carry a uniquely identifiable wireless device (smartphone, wearable, etc.)
-          <li> opt-in and associate your device with the link to your stories
-        </ul>
-        Curious?  Try <i>temporarily</i> participating in a Smart Space in two easy steps (no device required)!
-      </p>
-      <form id="checkin" action="" method="post">
-        <h3> 1. What would you care to share? </h3>
-        <div class="split">
-          Enter your stories:<br>
-          <input type="text" name="firstName" placeholder="First Name"><br>
-          <input type="text" name="lastName" placeholder="Last Name"><br>
-          <input type="text" name="companyName" placeholder="Company Name"><br>
-          <input type="text" name="companyUrl" placeholder="Company Webpage URL"><br>
-          <input type="text" name="twitterPersonalScreenName" placeholder="Twitter Handle (without @)"><br>
-          <input type="hidden" name="portraitImageUrl" value="http://reelyactive.com/images/barnowl.jpg">
-          <input type="hidden" name="place" value="test">
-          <input type="hidden" name="duration" value="15m">
+  <body ng-app="smartspaces">
+    <div ng-controller="InteractionCtrl">
+      <nav class="navbar navbar-default" role="navigation">
+        <div class="navbar-header">
+          <button type="button" class="navbar-toggle"
+                  ng-init="navCollapsed = true"
+                  ng-click="navCollapsed = !navCollapsed">
+            <span class="sr-only">Toggle navigation</span>
+            <span class="icon-bar"></span>
+            <span class="icon-bar"></span>
+            <span class="icon-bar"></span>
+          </button>
+          <a class="navbar-brand" href="http://context.reelyactive.com">
+            <strong>reely</strong>Active
+          </a>
         </div>
-        <div class="split">
-          This is how it will be shared:
-          <pre id="json"></pre>
+        <div class="collapse navbar-collapse" ng-class="!navCollapsed && 'in'"
+             ng-click="navCollapsed = true">
+          <ul class="nav navbar-nav navbar-right">
+            <li class="dropdown" dropdown on-toggle="toggled(open)">
+              <a href class="dropdown-toggle" dropdown-toggle role="button"
+                 data-toggle="dropdown" aria-haspopup="true"
+                 aria-expanded="false">
+                More <span class="caret"></span>
+              </a>
+              <ul class="dropdown-menu">
+                <li><a href="manage">Admin interface</a></li>
+              </ul>
+            </li>
+          </ul>
         </div>
-        <br style="clear:both">
-        <h3> 2. Host your stories and visit a Smart Space </h3>
-        <p> Click the button to <input type="submit" name="action" value="Host Your Digital Persona"> for 15 minutes. </p>
-        <p> This will redirect you to an instance of our <a href="https://www.npmjs.org/package/json-silo">json-silo</a> where you'll see the link to your hosted data.  There, click the "Visit your Smart Space" button to see yourself and others at <a href="test">The Barn</a>, a virtual Smart Space, until the 15 minutes expire. </p>
-        <p><i> Note that by clicking the button above you agree to having the information you entered hosted on the Internet for 15 minutes, after which time it will be erased from our database.  Remember, The Barn is a publicly-accessible webpage.  What happens on the Internet, stays on the Internet. </i></p>
-      </form>
-      <a id="develop"><h2> How can I develop with Smart Spaces? </h2></a>
-      <p> At reelyActive, we believe in an open Internet of Things.  All of the code behind Smart Spaces is open source.  It's built on HTML, CSS and JavaScript, including Node.js on the server side. </p>
-      <p> We suggest that you start with our <a href="http://reelyactive.github.io/quickyactive.html" target="_blank"> quickyActive </a> tutorial.  Then you can find plenty of other resources on <a href="http://reelyactive.github.io" target="_blank">diyActive</a>, our developer page.  Or you can simply dive into our <a href="https://github.com/reelyactive" target="_blank">GitHub</a> and <a href="https://www.npmjs.org/~reelyactive" target="_blank">npmjs</a> pages. </p>
-      <br><br><br><br>
+      </nav>
+      <div class="row">
+        <div class="col-xs-1 col-sm-2 col-md-3"></div>
+        <div class="col-xs-10 col-sm-8 col-md-6">
+          <img src="/rootpage/images/logo.png" class="img-responsive center-block">
+          <br><br><br>
+          <div ng-controller="SearchCtrl" class="text-center">
+            <form class="form-inline">
+              <div class="form-group">
+                <label for="place"> Visit a Smart Space: &nbsp; </label>
+                <select ng-model="target" class="form-control" id="place"
+                        ng-options="place.identifier as place.displayName for place in places"
+                        ng-change='visit()'>
+                  <option value=""> -- Select from list -- </option>
+                </select>
+              </div>
+            </form>
+          </div>
+          <br><br><br><br>
+          <tabset>
+            <tab heading="Learn more">
+              <h2 id="understand"> What are Smart Spaces? </h2>
+              <p> Smart Spaces are contextually aware environments.  They understand who and what is present.  This website allows you to visualise and discover the people and things located in any given Smart Space right now. </p>
+              <p> Click on anyone to discover what they're sharing via the circular icons.  And select one of three views: Who is present, What is present or the Social Scene. </p>
+              <img src="/rootpage/images/interface.png" class="img-responsive center-block">
+              <p> Smart Spaces are equipped with sensors that identify people and objects via their wireless devices (see <a href="http://context.reelyactive.com/technology.html" target="_blank">reelyActive technology</a>).  Each person and object is linked with any digital content, which we call "stories", that they decide to share (click the Participate tab).  The result is a real-time digital understanding of the real world (what we call <a href="http://context.reelyactive.com/context.html" target="_blank">hyperlocal context</a>). </p>
+              <br><br>
+            </tab>
+            <tab heading="Participate">
+              <h2 id="participate"> How can I participate? </h2>
+              <p> In order for a Smart Space to detect you and share your stories, you need to:
+                <ul>
+                  <li> host your stories online
+                  <li> carry a uniquely identifiable wireless device (smartphone, wearable, etc.)
+                  <li> opt-in and associate your device with the link to your stories
+                </ul>
+              </p>
+              <h3> I have a smartphone </h3>
+              <p> Participate in any Smart Space with your smartphone in under a minute with reelyApp: </p>
+              <p class="text-center">
+                <a class="btn btn-primary" role="button" target="_blank"
+                   href="https://play.google.com/store/apps/details?id=com.reelyactive.reelyapp"> reelyApp for Android </a>
+              </p>
+              <h3> I have a Bluetooth Smart device </h3>
+              <p> Many Bluetooth Smart devices can be detected by Smart Spaces, for instance fitness trackers and keychain fobs.  If you know the 48-bit identifier of the device, participation is easy:
+                <ol>
+                  <li> create and store a profile on myjson.info
+                  <li> when prompted enter the device's identifier
+                </ol>
+              </p>
+              <p class="text-center">
+                <a class="btn btn-primary" href="http://myjson.info"
+                   target="_blank" role="button"> Visit myjson.info </a>
+              </p>
+              <h3> I just want to be a bubble </h3>
+              <p> It's also possible to host <i>simulated</i> Smart Spaces that present static content.  For instance, check out <a href="http://smartspac.es/example-mascots" target="_blank">The Island of Misfit Mascots</a>.  If that's all you need, simply get in touch! </p>
+              <p class="text-center">
+                <a class="btn btn-primary" target="_blank" role="button"
+                   href="http://context.reelyactive.com/contact.html">
+                  Contact reelyActive 
+                </a>
+              </p>
+              <br><br>
+            </tab>
+            <tab heading="Develop">
+              <h2 id="develop"> How can I develop with Smart Spaces? </h2>
+              <p> At reelyActive, we believe in an open Internet of Things.  All of the code behind Smart Spaces is open source.  It's built on HTML, CSS and JavaScript, including Node.js on the server side. </p>
+              <p> We suggest that you start with our <a href="http://reelyactive.github.io/quickyactive.html" target="_blank"> quickyActive </a> tutorial.  Then you can find plenty of other resources on <a href="http://reelyactive.github.io" target="_blank">diyActive</a>, our developer page, including our <a href="http://reelyactive.github.io/integrate-your-mobile-app.html" target="_blank"> Integrate your Mobile App </a> tutorial.  Or you can simply dive into our <a href="https://github.com/reelyactive" target="_blank">GitHub</a> and <a href="https://www.npmjs.org/~reelyactive" target="_blank">npmjs</a> pages. </p>
+              <br><br>
+            </tab>
+          </tabset>
+        </div>
+        <div class="col-xs-1 col-sm-2 col-md-3"></div>
+      </div>
+      <footer class="footer">
+        <a href="https://www.npmjs.com/package/smartspaces"> smartspaces </a>
+        &nbsp; | &nbsp;
+        <a href="http://context.reelyactive.com"
+           tooltip="We believe in an open Internet of Things"
+           tooltip-placement="right">
+          &copy; reelyActive 2014-2015
+        </a>
+      </footer>
     </div>
-    <div id="content">
-      <p>Developed by <a href="http://context.reelyactive.com" target="_blank">reelyActive</a> &nbsp; | &nbsp; Go <a href="#start">back to the top</a></p>
-    </div>
-    <script type="text/javascript" src="/rootpage/js/jquery.min.js"></script>
-    <script type="text/javascript" src="/rootpage/js/script.js"></script>
   </body>
 </html>
