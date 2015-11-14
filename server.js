@@ -423,7 +423,13 @@ function SmartspacesServer(options) {
   app.post('/remote', function(req, res) {
     var url = req.body.url;
     var urlHash = md5(url);
-    request.get(url, function (error, response, body) {
+    var options = {
+      url: url,
+      headers: {
+        'User-Agent': 'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_10_1) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/41.0.2227.1 Safari/537.36'
+      }
+    };
+    request.get(options, function (error, response, body) {
       if (!error) {
         remoteCache.set(urlHash, body);
         res.json({ hash: urlHash });
