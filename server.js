@@ -557,5 +557,3 @@ function SmartspacesServer(options) {
 }
 
 module.exports = SmartspacesServer;
-
-var ss = new SmartspacesServer();
