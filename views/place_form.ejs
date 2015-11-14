@@ -1,4 +1,4 @@
-<div class="form place-form <% if (place == null) { %>new-form<% } %>" <% if (place != null) { %>id="<%= place.identifier %>"<% } %>>
+<div class="form place-form <% if (place == null) { %>new-form<% } %>" <% if (place != null) { %>id="<%= place.identifier.replace(':','-') %>"<% } %>>
 	<% if (place != null) { %>
 		<div class="remove">
 			<a href="javascript:void(0)" class="initial">Remove this place</a>

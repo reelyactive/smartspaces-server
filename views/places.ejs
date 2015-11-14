@@ -9,7 +9,7 @@
 		</div>
 		<div class="place-selectors">
 			<% for (var i = 0; i < places.length; i++) { %>
-			  <div class="place selector" data-identifier="<%= places[i].identifier %>" id="selector<%= places[i]._id %>"><%= places[i].displayName %></div>
+			  <div class="place selector" data-identifier="<%= places[i].identifier.replace(':','-') %>" id="selector<%= places[i]._id %>"><%= places[i].displayName %></div>
 			<% } %>
 		</div>
 		<div class="place selector dummy"></div>
