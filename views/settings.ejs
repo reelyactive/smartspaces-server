@@ -24,6 +24,9 @@
 				<div class="label">Ambient Mode Cycle Interval <span class="eg">(in seconds)</span></div>
 				<input type="text" id="ambientCycleInterval" class="short number" <% if (settings.hasOwnProperty('ambientCycleInterval')) { %>value="<%= settings.ambientCycleInterval %>"<% } else { %>value="10"<% } %> />
 			</div>
+			<div class="form-item">
+				<div class="label no-bold"><input type="checkbox" id="showDetection" <% if (!settings.hasOwnProperty('showDetection') || settings.showDetection == 'true') { %>checked<% } %> /> Show device detection animation</div>
+			</div>
 			<div class="save">Save</div>
 			<div class="saved">Saved!</div>
 			<div class="add">Add</div>

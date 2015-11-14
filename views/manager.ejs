@@ -221,6 +221,10 @@
 			.place-form, .service-form {
 			  display: none;
 			}
+			
+			.no-bold {
+				font-weight: 400 !important;
+			}
 
 			.save, .add, .login {
 			  background-color: #aeaeae;
@@ -326,8 +330,12 @@
 			  $('input, select', form).each(function() {
 			    var attrName = this.id;
 			    var attrVal = $(this).val();
+					if ($(this).attr('type') == 'checkbox') {
+						attrVal = $(this).is(':checked');
+					}
 			    formData[attrName] = attrVal;
 			  });
+				console.log(formData);
 			  return formData;
 			}
 
