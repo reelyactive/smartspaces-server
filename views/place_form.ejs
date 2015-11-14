@@ -25,6 +25,11 @@
 		<div class="label">Social Feeds</div>
 		<span class="label-url">twitter.com/</span><input type="text" id="twitter" class="nospaces" <% if (place != null) { %>value="<%= place.twitter %>"<% } %> />
 	</div>
+	<div class="form-item">
+		<div class="label">Forced Background Color</div>
+		<div class="eg">If nothing is entered here, the default gradient will be used.</div>
+		<input type="text" id="forcedBackground" class="medium" <% if (place != null && place.hasOwnProperty('forcedBackground')) { %>value="<%= place.forcedBackground %>"<% } %> />
+	</div>
 	<div class="save">Save</div>
 	<div class="saved">Saved!</div>
 	<div class="add">Add</div>
